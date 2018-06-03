@@ -1,12 +1,21 @@
 // @flow
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import logger from 'morgan';
+import expressLogger from 'morgan';
 import express from 'express';
 import type { $Application } from 'express';
-
 import type { AppConfig } from './config/';
 import router from './api';
+import logger from './logger';
+import Client from './rabbitMQ/client';
+import Event from './rabbitMQ/events';
+import type { EventConsumerInterface } from './rabbitMQ/eventsConsumer';
+import {
+  RideCompletedEvent,
+  RideCreateEvent,
+  RiderPhoneUpdateEvent,
+  RiderSignUpEvent,
+} from './rabbitMQ/eventsConsumer';
 
 // Can't import Server type, flow can't find it, too bad :(
 // Even require('http') don't want to be resolved :/
@@ -20,6 +29,7 @@ class App {
     expressApp: $Application;
     config: AppConfig;
     server: any;
+    messagingClient: Client;
 
     constructor(
       expressApp: $Application,
@@ -43,7 +53,7 @@ class App {
       this.expressApp.use(cors());
 
       // Logging
-      this.expressApp.use(logger('combined'));
+      this.expressApp.use(expressLogger('combined'));
 
       // Attach app routes
       this.expressApp.use(router);
@@ -57,27 +67,35 @@ class App {
     //
     // }
     //
-    // // Should be better to use Queue Interface in case one day it changes)
-    // initializeRabbitMQ() {
-    //
-    // }
+
+    async prepareEventMessaging(): Promise<void> {
+      logger.log('info', 'RabbitMQ initialization');
+      await this.messagingClient.connect();
+
+      const events: Map<string, EventConsumerInterface> = new Map();
+      events.set(Event.RIDE.COMPLETED, new RideCompletedEvent());
+      events.set(Event.RIDE.RIDE_CREATE, new RideCreateEvent());
+      events.set(Event.RIDER.SIGN_UP, new RiderSignUpEvent());
+      events.set(Event.RIDER.PHONE_UPDATE, new RiderPhoneUpdateEvent());
+
+      this.messagingClient.bindEvents(events);
+    }
 
     init() {
       this.initializeExpress();
+
+      // Prepare our RabbitMQ client
+      this.messagingClient = new Client(this.config.amqp);
       // this.initializeMongoDb();
-      // this.initializeRabbitMQ();
     }
 
-    async start(): Promise<App> {
+    async start(): Promise<void> {
+      await this.prepareEventMessaging();
       this.server = await this.expressApp.listen(this.config.api.port);
-      // eslint-disable-next-line no-console
-      console.log(`✔ Server running on port ${this.config.api.port}`);
-
-      return this;
+      logger.log('info', `✔ Server running on port ${this.config.api.port}`);
     }
 
-    async stop(): Promise<App> {
-      return this;
+    async stop(): Promise<void> {
     }
 
     getExpressApp(): $Application {
