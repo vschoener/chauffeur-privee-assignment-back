@@ -28,8 +28,9 @@ export type PayloadRideComplete = {
 }
 
 export class RideCompletedEvent implements EventConsumerInterface {
-  consume(data: PayloadRideComplete): Promise<void> {
-    return Promise.resolve();
+  async consume(data: PayloadRideComplete): Promise<void> {
+    const ride = await RideService.processCompleteRide(data);
+    logger.log('info', `Ride ${ride.rideId} has been completed`);
   }
 }
 

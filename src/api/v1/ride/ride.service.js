@@ -4,7 +4,7 @@
 import { Ride, RideStatus } from './ride.model';
 import { Rider } from '../rider/rider.model';
 import { RiderService } from '../rider/rider.service';
-import type { PayloadRideCreate } from '../../../rabbitMQ/eventsConsumer';
+import type { PayloadRideComplete, PayloadRideCreate } from '../../../rabbitMQ/eventsConsumer';
 
 /**
  * Manage needs about Rider
@@ -42,6 +42,32 @@ export class RideService {
       status: RideStatus.CREATED,
     });
 
+    return ride.save();
+  }
+
+  /**
+   * End a running ride
+   * @param data
+   * @returns {Promise<*>}
+   */
+  static async processCompleteRide(data: PayloadRideComplete): Promise<?Ride> {
+    const ride = await RideService.getRideFromId(data.id);
+    if (!ride) {
+      throw new Error(`Ride ${data.id} doesn't exist`);
+    }
+
+    // In case there is an issue with the riders
+    if (ride.riderId != data.rider_id) {
+      throw  new Error(`Riders don't match`);
+    }
+
+    if (ride.status === RideStatus.COMPLETED) {
+      throw new Error('Ride is already completed');
+    }
+
+    ride.status = RideStatus.COMPLETED;
+    // I'm not sure if the amount change (estimation when created ?)
+    ride.amount = data.amount;
     return ride.save();
   }
 
