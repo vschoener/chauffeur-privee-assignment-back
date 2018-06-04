@@ -22,6 +22,7 @@ export const schema: mongoose.Schema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     require: false,
+    default: '',
     //  use validator international method,
   },
 });
@@ -30,7 +31,7 @@ export const schema: mongoose.Schema = new mongoose.Schema({
 export class RiderModel extends mongoose.Model {
   riderId: number;
   name: string;
-  phoneNumber: number;
+  phoneNumber: string;
 
   // Only an example of what we could do
   get formattedpPoneNumber() {

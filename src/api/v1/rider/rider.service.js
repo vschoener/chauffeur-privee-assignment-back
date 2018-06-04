@@ -3,6 +3,7 @@
  */
 import { Rider } from './rider.model';
 import { PayloadSignUp } from '../../../rabbitMQ/eventsConsumer';
+import type { PayloadPhoneUpdate } from '../../../rabbitMQ/eventsConsumer';
 
 /**
  * Manage needs about Rider
@@ -25,6 +26,26 @@ export class RiderService {
     });
 
     return await rider.save();
+  }
+
+  /**
+   * Update Rider phone number
+   * @param riderData
+   * @returns {Promise<void>}
+   */
+  static async updatePhone(riderData: PayloadPhoneUpdate): Promise<Rider> {
+    const existingRider = await this.getRiderFromRiderId(riderData.id);
+    if (!existingRider) {
+      throw new Error('Rider doesn\'t exists, phone can\'t be saved to a rider');
+    }
+
+    // Update phone only if they're different
+    if (existingRider.phoneNumber !== riderData.phone_number) {
+      existingRider.phoneNumber = riderData.phone_number;
+      await existingRider.save();
+    }
+
+    return existingRider;
   }
 
   /**

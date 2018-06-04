@@ -54,7 +54,11 @@ export default class Client {
 
       if (eventConsumer) {
         logger.log('info', "Event found: [x] %s:'%s'", fields.routingKey, content.toString());
-        eventConsumer.consume(JSON.parse(content.toString()).payload);
+        // Catch error here to keep the process running
+        eventConsumer.consume(JSON.parse(content.toString()).payload)
+          .catch(e => {
+            logger.log('error', e);
+          });
       } else {
         // Log this one as an error and have report about it with our logger services in case we need to
         // fix somethings wrong

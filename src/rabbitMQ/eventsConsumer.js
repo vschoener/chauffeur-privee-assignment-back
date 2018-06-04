@@ -33,12 +33,13 @@ export class RideCompletedEvent implements EventConsumerInterface {
 
 export type PayloadPhoneUpdate = {
   id: number;
-  phone: string;
+  phone_number: string;
 }
 
 export class RiderPhoneUpdateEvent implements EventConsumerInterface {
-  consume(data: PayloadPhoneUpdate): Promise<void> {
-    return Promise.resolve();
+  async consume(data: PayloadPhoneUpdate): Promise<void> {
+    const rider = await RiderService.updatePhone(data);
+    logger.log('info', `Phone ${rider.phoneNumber} has been updated for ${rider.riderId}`);
   }
 }
 
@@ -49,11 +50,7 @@ export type PayloadSignUp = {
 
 export class RiderSignUpEvent implements EventConsumerInterface {
   async consume(data: PayloadSignUp): Promise<void> {
-    try {
-      const rider = await RiderService.processNewRider(data);
-      logger.log('info', `New Rider saved: ${rider._id} from id '${rider.riderId}'`);
-    } catch (e) {
-      logger.log('error', e);
-    }
+    const rider = await RiderService.processNewRider(data);
+    logger.log('info', `New Rider saved: ${rider._id} from id '${rider.riderId}'`);
   }
 }
