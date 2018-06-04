@@ -17,7 +17,7 @@ export class RiderService {
   static async processNewRider(riderData: PayloadSignUp): Promise<Rider> {
     const existingRider = await this.getRiderFromRiderId(riderData.id);
     if (existingRider) {
-      throw new Error('Rider already exists');
+      throw new Error(`Rider ${riderData.id} already exists`);
     }
 
     const rider = new Rider({
@@ -36,7 +36,7 @@ export class RiderService {
   static async updatePhone(riderData: PayloadPhoneUpdate): Promise<Rider> {
     const existingRider = await this.getRiderFromRiderId(riderData.id);
     if (!existingRider) {
-      throw new Error('Rider doesn\'t exists, phone can\'t be saved to a rider');
+      throw new Error(`Rider ${riderData.id} doesn't exists, phone can't be saved`);
     }
 
     // Update phone only if they're different
