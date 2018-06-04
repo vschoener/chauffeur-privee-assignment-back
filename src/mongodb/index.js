@@ -1,5 +1,9 @@
 // @flow
 import mongoose from 'mongoose';
+
+// Need to find how to import / inject data
+require('mongoose-long')(mongoose);
+
 import type { Connection } from 'mongodb'
 import logger from '../logger';
 import type { MongoConfig } from '../config';

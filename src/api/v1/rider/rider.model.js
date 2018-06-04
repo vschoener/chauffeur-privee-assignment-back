@@ -11,7 +11,7 @@ import mongoose from 'mongoose';
  */
 export const schema: mongoose.Schema = new mongoose.Schema({
   riderId: {
-    type: String,
+    type: mongoose.Schema.Types.Long,
     required: true,
     unique: true,
   },
