@@ -51,6 +51,6 @@ export type PayloadSignUp = {
 export class RiderSignUpEvent implements EventConsumerInterface {
   async consume(data: PayloadSignUp): Promise<void> {
     const rider = await RiderService.processNewRider(data);
-    logger.log('info', `New Rider saved: ${rider._id} from id '${rider.riderId}'`);
+    logger.log('info', `New rider created: ${rider._id} from id '${rider.riderId}'`);
   }
 }

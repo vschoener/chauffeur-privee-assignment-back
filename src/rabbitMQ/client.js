@@ -1,6 +1,7 @@
 // @flow
 import type { Channel, ChannelModel } from 'amqplib/lib/channel_model';
 import * as amqplib from 'amqplib';
+import md5 from 'md5';
 import type { AMPQConfig } from '../config';
 import logger from '../logger';
 import type { EventConsumerInterface } from './eventsConsumer';
@@ -43,26 +44,42 @@ export default class Client {
    * Bind RabbitMQ messages as event from routing key
    * @param events
    */
-  bindEvents(events: Map<string, EventConsumerInterface>) {
+  consume(events: Map<string, EventConsumerInterface>) {
     logger.log('info', ' [*] Waiting for Event Messages');
 
+    // Used to manage duplicate message and might be used to reorder message
+    const messagesStack: Array<String> = [];
     this.channel.consume(this.queueInfo.queue, (msg) => {
+
       // Destructuring attributes from object
       // We could also enforce type on these one
       const { fields, content } = msg;
+      const contentAsString = content.toString();
+      const encodedMessage = md5(contentAsString);
       const eventConsumer = events.get(fields.routingKey);
 
+      if (messagesStack.findIndex((message) => message === encodedMessage) >= 0) {
+        logger.log('info', 'Duplicated message, skipped.');
+        return;
+      }
+
+      messagesStack.push(encodedMessage);
       if (eventConsumer) {
-        logger.log('info', "Event found: [x] %s:'%s'", fields.routingKey, content.toString());
+        logger.log('info', "Event found: [x] %s:'%s'", fields.routingKey, contentAsString);
         // Catch error here to keep the process running
-        eventConsumer.consume(JSON.parse(content.toString()).payload)
+        eventConsumer.consume(JSON.parse(contentAsString).payload)
           .catch(e => {
-            logger.log('error', e);
+            logger.log('error', e.message);
           });
       } else {
         // Log this one as an error and have report about it with our logger services in case we need to
         // fix somethings wrong
-        logger.log('error', "Event not found: [x] %s:'%s'", fields.routingKey, content.toString());
+        logger.log('error', "Event not found: [x] %s:'%s'", fields.routingKey, contentAsString);
+      }
+
+      // Keep memory low
+      if (messagesStack.length > 1024) {
+        messagesStack.shift();
       }
     });
   }

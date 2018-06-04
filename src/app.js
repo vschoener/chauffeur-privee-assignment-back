@@ -83,7 +83,7 @@ class App {
     events.set(Event.RIDER.SIGN_UP, new RiderSignUpEvent());
     events.set(Event.RIDER.PHONE_UPDATE, new RiderPhoneUpdateEvent());
 
-    this.messagingClient.bindEvents(events);
+    this.messagingClient.consume(events);
   }
 
   async prepareMongoDb(): Promise<void> {
