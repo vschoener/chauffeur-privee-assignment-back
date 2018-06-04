@@ -1,4 +1,7 @@
 // @flow
+import dotenv from 'dotenv';
+
+dotenv.config({path: __dirname + '/../../.env'});
 
 export type MongoConfig = {
   name: string;

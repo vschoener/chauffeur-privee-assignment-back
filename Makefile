@@ -3,6 +3,8 @@ all: down build
 build:
 	docker-compose build
 
+build-app:
+	docker-compose r
 start:
 	docker-compose up -d
 
@@ -18,3 +20,6 @@ test:
 
 logs:
 	docker-compose logs -f
+
+watch:
+	docker-compose run --rm app npm run watch

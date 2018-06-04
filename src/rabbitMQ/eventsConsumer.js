@@ -1,6 +1,10 @@
 // @flow
+
+import { RiderService } from '../api/v1/rider/rider.service';
+import logger from '../logger';
+
 export interface EventConsumerInterface {
-  consume(data: Object): void
+  consume(data: Object): Promise<any>
 }
 
 export type PayloadRideCreate = {
@@ -10,8 +14,8 @@ export type PayloadRideCreate = {
 }
 
 export class RideCreateEvent implements EventConsumerInterface {
-  consume(data: PayloadRideCreate) {
-
+  consume(data: PayloadRideCreate): Promise<void> {
+    return Promise.resolve();
   }
 }
 
@@ -22,8 +26,8 @@ export type PayloadRideComplete = {
 }
 
 export class RideCompletedEvent implements EventConsumerInterface {
-  consume(data: PayloadRideComplete) {
-
+  consume(data: PayloadRideComplete): Promise<void> {
+    return Promise.resolve();
   }
 }
 
@@ -33,18 +37,23 @@ export type PayloadPhoneUpdate = {
 }
 
 export class RiderPhoneUpdateEvent implements EventConsumerInterface {
-  consume(data: PayloadPhoneUpdate) {
-
+  consume(data: PayloadPhoneUpdate): Promise<void> {
+    return Promise.resolve();
   }
 }
 
 export type PayloadSignUp = {
   id: number;
-  phone: string;
+  name: string;
 }
 
 export class RiderSignUpEvent implements EventConsumerInterface {
-  consume(data: PayloadSignUp) {
-
+  async consume(data: PayloadSignUp): Promise<void> {
+    try {
+      const rider = await RiderService.processNewRider(data);
+      logger.log('info', `New Rider saved: ${rider._id} from id '${rider.riderId}'`);
+    } catch (e) {
+      logger.log('error', e);
+    }
   }
 }
