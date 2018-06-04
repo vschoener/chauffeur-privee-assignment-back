@@ -53,10 +53,12 @@ export default class Client {
 
       // Destructuring attributes from object
       // We could also enforce type on these one
+      // @content is a Buffer
       const { fields, content } = msg;
       const contentAsString = content.toString();
       const encodedMessage = md5(contentAsString);
-      const eventConsumer = events.get(fields.routingKey);
+      const contentObj = JSON.parse(contentAsString);
+      const eventConsumer = events.get(contentObj.type);
 
       if (messagesStack.findIndex((message) => message === encodedMessage) >= 0) {
         logger.log('info', 'Duplicated message, skipped.');
@@ -67,7 +69,7 @@ export default class Client {
       if (eventConsumer) {
         logger.log('info', "Event found: [x] %s:'%s'", fields.routingKey, contentAsString);
         // Catch error here to keep the process running
-        eventConsumer.consume(JSON.parse(contentAsString).payload)
+        eventConsumer.consume(contentObj.payload)
           .catch(e => {
             logger.log('error', e.message);
           });

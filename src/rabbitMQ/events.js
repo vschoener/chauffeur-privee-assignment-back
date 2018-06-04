@@ -1,12 +1,12 @@
 // @flow
 const Events = {
   RIDE: {
-    COMPLETED: 'ride.completed',
-    RIDE_CREATE: 'ride.create',
+    COMPLETED: 'ride_completed',
+    RIDE_CREATE: 'ride_created',
   },
   RIDER: {
-    PHONE_UPDATE: 'rider.phone_update',
-    SIGN_UP: 'rider.signup',
+    PHONE_UPDATE: 'rider_updated_phone_number',
+    SIGN_UP: 'rider_signed_up',
   },
 };
 
