@@ -1,6 +1,7 @@
 // @flow
 
 import { RiderService } from '../api/v1/rider/rider.service';
+import { RideService } from '../api/v1/ride/ride.service';
 import logger from '../logger';
 
 export interface EventConsumerInterface {
@@ -10,19 +11,20 @@ export interface EventConsumerInterface {
 export type PayloadRideCreate = {
   id: number;
   amount: number;
-  riderId: number;
+  rider_id: number;
 }
 
 export class RideCreateEvent implements EventConsumerInterface {
-  consume(data: PayloadRideCreate): Promise<void> {
-    return Promise.resolve();
+  async consume(data: PayloadRideCreate): Promise<void> {
+   const ride = await RideService.processNewRide(data);
+   logger.log('info', `New ride created: ${ride._id} from ${ride.rideId}`);
   }
 }
 
 export type PayloadRideComplete = {
   id: number;
   amount: number;
-  riderId: number;
+  rider_id: number;
 }
 
 export class RideCompletedEvent implements EventConsumerInterface {

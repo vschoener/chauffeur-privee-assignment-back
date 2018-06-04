@@ -25,6 +25,11 @@ export const schema: mongoose.Schema = new mongoose.Schema({
     default: '',
     //  use validator international method,
   },
+  dateAdd: {
+    type: Date,
+    require: true,
+    default: Date.now,
+  }
 });
 
 // Seems redundant but it enforces the type and code completion around our RiderModel
