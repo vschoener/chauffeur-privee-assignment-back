@@ -4,6 +4,7 @@
 import { Rider } from './rider.model';
 import { PayloadSignUp } from '../../../rabbitMQ/eventsConsumer';
 import type { PayloadPhoneUpdate } from '../../../rabbitMQ/eventsConsumer';
+import { MessageError } from '../../../rabbitMQ/messageError';
 
 /**
  * Manage needs about Rider
@@ -17,7 +18,7 @@ export class RiderService {
   static async processNewRider(riderData: PayloadSignUp): Promise<Rider> {
     const existingRider = await this.getRiderFromRiderId(riderData.id);
     if (existingRider) {
-      throw new Error(`Rider ${riderData.id} already exists`);
+      throw new MessageError(`Rider ${riderData.id} already exists`);
     }
 
     const rider = new Rider({
@@ -36,7 +37,7 @@ export class RiderService {
   static async updatePhone(riderData: PayloadPhoneUpdate): Promise<Rider> {
     const existingRider = await this.getRiderFromRiderId(riderData.id);
     if (!existingRider) {
-      throw new Error(`Rider ${riderData.id} doesn't exists, phone can't be saved`);
+      throw MessageError.getRequeueError(`Rider ${riderData.id} doesn't exists, phone can't be saved`, 'warn');
     }
 
     // Update phone only if they're different

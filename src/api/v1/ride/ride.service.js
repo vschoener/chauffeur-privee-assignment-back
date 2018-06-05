@@ -5,7 +5,8 @@ import { Ride, RideStatus } from './ride.model';
 import { Rider } from '../rider/rider.model';
 import { RiderService } from '../rider/rider.service';
 import type { PayloadRideComplete, PayloadRideCreate } from '../../../rabbitMQ/eventsConsumer';
-import {LoyaltyService} from '../loyalty/loyalty.service';
+import { LoyaltyService } from '../loyalty/loyalty.service';
+import { MessageError } from '../../../rabbitMQ/messageError';
 
 /**
  * Manage needs about Rider
@@ -19,21 +20,21 @@ export class RideService {
   static async processNewRide(data: PayloadRideCreate): Promise<?Ride> {
     const rider = await RiderService.getRiderFromRiderId(data.rider_id);
     if (!rider) {
-      throw new Error(`Ride ${data.id} can't be created, rider ${data.rider_id} doesn't exist`);
+      throw MessageError.getRequeueError(`Ride ${data.id} can't be created, rider ${data.rider_id} doesn't exist`, 'warn');
     }
 
     const existingRide = await RideService.getRideFromId(data.id);
     if (existingRide) {
-      throw new Error(`Ride ${data.id} already exists`);
+      throw new MessageError(`Ride ${data.id} already exists`);
     }
 
     const lastRide = await RideService.getLastRideFromRider(rider.riderId);
     if (lastRide && lastRide.status === RideStatus.CREATED) {
-      throw new Error(`The ride ${lastRide.rideId} is already running, you can't start a new one`);
+      throw new MessageError(`The ride ${lastRide.rideId} is already running, you can't start a new one`);
     }
 
     if (data.amount <= 0) {
-      throw new Error(`Amount ${data.amount} must be positive`);
+      throw new MessageError(`Amount ${data.amount} must be positive`);
     }
 
     const ride = new Ride({
@@ -54,18 +55,18 @@ export class RideService {
   static async processCompleteRide(data: PayloadRideComplete): Promise<?Ride> {
     const ride = await RideService.getRideFromId(data.id);
     if (!ride) {
-      throw new Error(`Ride ${data.id} doesn't exist`);
+      throw MessageError.getRequeueError(`Ride ${data.id} doesn't exist`, 'warn');
     }
 
     // In case there is an issue with the riders
     // Do not compare with extra type as it's a Mongoose.Long <> number
     // Maybe store this one using int32 would resolve this kind of issue :/
     if (ride.riderId != data.rider_id) {
-      throw  new Error(`Riders don't match`);
+      throw new MessageError(`Riders don't match`);
     }
 
     if (ride.status === RideStatus.COMPLETED) {
-      throw new Error('Ride is already completed');
+      throw new MessageError('Ride is already completed');
     }
 
     ride.status = RideStatus.COMPLETED;
