@@ -5,6 +5,7 @@ import { Ride, RideStatus } from './ride.model';
 import { Rider } from '../rider/rider.model';
 import { RiderService } from '../rider/rider.service';
 import type { PayloadRideComplete, PayloadRideCreate } from '../../../rabbitMQ/eventsConsumer';
+import {LoyaltyService} from '../loyalty/loyalty.service';
 
 /**
  * Manage needs about Rider
@@ -57,6 +58,8 @@ export class RideService {
     }
 
     // In case there is an issue with the riders
+    // Do not compare with extra type as it's a Mongoose.Long <> number
+    // Maybe store this one using int32 would resolve this kind of issue :/
     if (ride.riderId != data.rider_id) {
       throw  new Error(`Riders don't match`);
     }
@@ -68,7 +71,13 @@ export class RideService {
     ride.status = RideStatus.COMPLETED;
     // I'm not sure if the amount change (estimation when created ?)
     ride.amount = data.amount;
-    return ride.save();
+    await ride.save();
+
+    // Leave our service manage this task
+    const rider = await RiderService.getRiderFromRiderId(ride.riderId);
+    await LoyaltyService.processNewRideComplete(rider, ride);
+
+    return ride;
   }
 
   /**

@@ -1,6 +1,7 @@
 // @flow
 
 import mongoose from 'mongoose';
+import { LOYALTY_STATUS } from '../loyalty/loyalty.service';
 
 /**
  * I'm not sure of the best approach here about the the Rider ID
@@ -29,6 +30,16 @@ export const schema: mongoose.Schema = new mongoose.Schema({
     type: Date,
     require: true,
     default: Date.now,
+  },
+  totalRideCompleted: {
+    type: Number,
+    require: false,
+    default: 0,
+  },
+  loyaltyStatus: {
+    type: String,
+    require: false,
+    default: LOYALTY_STATUS.BRONZE,
   }
 });
 
@@ -37,6 +48,8 @@ export class RiderModel extends mongoose.Model {
   riderId: number;
   name: string;
   phoneNumber: string;
+  totalRideCompleted: number;
+  loyaltyStatus: string;
 
   // Only an example of what we could do
   get formattedpPoneNumber() {

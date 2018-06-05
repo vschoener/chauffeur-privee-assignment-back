@@ -31,6 +31,11 @@ export const schema: mongoose.Schema = new mongoose.Schema({
     type: Date,
     require: true,
     default: Date.now,
+  },
+  loyaltyPointEarned: {
+    type: Number,
+    require: false,
+    default: 0,
   }
 });
 
@@ -39,6 +44,7 @@ export class RideModel extends mongoose.Model {
   riderId: number;
   amount: number;
   status: string;
+  loyaltyPointEarned: number;
 }
 
 schema.loadClass(RideModel);
