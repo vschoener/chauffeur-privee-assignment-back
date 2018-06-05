@@ -1,7 +1,7 @@
 // @flow
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import expressLogger from 'morgan';
+import morgan from 'morgan';
 import express from 'express';
 import type { $Application } from 'express';
 import type { AppConfig } from './config/';
@@ -63,7 +63,7 @@ class App {
     this.expressApp.use(cors());
 
     // Logging
-    this.expressApp.use(expressLogger('combined'));
+    this.expressApp.use(morgan('combined', { stream: logger.stream }));
 
     // Attach app routes
     this.expressApp.use(router);
