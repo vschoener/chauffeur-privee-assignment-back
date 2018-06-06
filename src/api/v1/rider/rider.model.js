@@ -26,11 +26,6 @@ export const schema: mongoose.Schema = new mongoose.Schema({
     default: '',
     //  use validator international method,
   },
-  dateAdd: {
-    type: Date,
-    require: true,
-    default: Date.now,
-  },
   totalRideCompleted: {
     type: Number,
     require: false,
@@ -40,8 +35,14 @@ export const schema: mongoose.Schema = new mongoose.Schema({
     type: String,
     require: false,
     default: LOYALTY_STATUS.BRONZE,
-  }
-});
+  },
+},
+  {
+    timestamps: {
+      createdAt: 'createdAt',
+      updatedAt: 'updatedAt',
+    }
+  });
 
 // Seems redundant but it enforces the type and code completion around our RiderModel
 export class RiderModel extends mongoose.Model {

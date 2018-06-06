@@ -1,6 +1,6 @@
-/// @flow
-import { RiderModel } from '../rider/rider.model';
-import { RideModel } from '../ride/ride.model';
+// / @flow
+import { Rider } from '../rider/rider.model';
+import { Ride } from '../ride/ride.model';
 
 export const LOYALTY_STATUS = {
   BRONZE: 'BRONZE',
@@ -54,7 +54,7 @@ export class LoyaltyService {
    * @param ride
    * @returns {Promise<void>}
    */
-  static async processNewRideComplete(rider: RiderModel, ride: RideModel): Promise<void> {
+  static async processNewRideComplete(rider: Rider, ride: Ride): Promise<void> {
     rider.totalRideCompleted += 1;
     rider.loyaltyStatus = LoyaltyService.getTotalRideStatus(rider.totalRideCompleted);
 
@@ -70,7 +70,7 @@ export class LoyaltyService {
    * @param status
    * @returns {number}
    */
-  static getPointEarned(ride: RideModel, status: string) {
+  static getPointEarned(ride: Ride, status: string) {
     const rule: Rule = LoyaltyService.getRuleFromStatus(status);
 
     return rule.multiplier * ride.amount;
@@ -102,8 +102,6 @@ export class LoyaltyService {
    * @returns {Rule}
    */
   static getTotalRideRule(totalRide: number): any {
-    return loyaltyRules.find((rule: Rule) => {
-      return rule.min <= totalRide && (rule.max ? totalRide < rule.max :  true);
-    });
+    return loyaltyRules.find((rule: Rule) => rule.min <= totalRide && (rule.max ? totalRide < rule.max : true));
   }
 }

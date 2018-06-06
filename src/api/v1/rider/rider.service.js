@@ -6,6 +6,8 @@ import { PayloadSignUp } from '../../../rabbitMQ/eventsConsumer';
 import type { PayloadPhoneUpdate } from '../../../rabbitMQ/eventsConsumer';
 import { MessageError } from '../../../rabbitMQ/messageError';
 
+// TODO: Implement a Payload Validator before sending the data to mongo
+
 /**
  * Manage needs about Rider
  */

@@ -27,17 +27,18 @@ export const schema: mongoose.Schema = new mongoose.Schema({
     require: true,
     default: RideStatus.CREATED,
   },
-  dateAdd: {
-    type: Date,
-    require: true,
-    default: Date.now,
-  },
   loyaltyPointEarned: {
     type: Number,
     require: false,
     default: 0,
-  }
-});
+  },
+},
+  {
+    timestamps: {
+      createdAt: 'createdAt',
+      updatedAt: 'updatedAt',
+    }
+  });
 
 export class RideModel extends mongoose.Model {
   rideId: number;

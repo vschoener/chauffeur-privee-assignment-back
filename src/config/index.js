@@ -1,7 +1,7 @@
 // @flow
 import dotenv from 'dotenv';
 
-dotenv.config({path: __dirname + '/../../.env'});
+dotenv.config({ path: `${__dirname}/../../.env` });
 
 export type MongoConfig = {
   name: string;
@@ -17,6 +17,7 @@ export type AMPQConfig = {
   exchange: string,
   url: string,
   topics: Array<string>,
+  qos: number,
 }
 
 export type ApiServerConfig = {
@@ -28,6 +29,8 @@ export type AppConfig = {
     mongodb: MongoConfig;
     amqp: AMPQConfig;
 }
+
+const amqpQos: any = process.env.AMQP_QOS || 8192;
 
 //  About new Buffer deprecated in Node 10:
 // https://nodesource.com/blog/understanding-the-buffer-deprecation-in-node-js-10/
@@ -51,6 +54,7 @@ const appConfig: AppConfig = {
       'ride.*',
       'rider.*',
     ],
+    qos: amqpQos,
   },
 };
 

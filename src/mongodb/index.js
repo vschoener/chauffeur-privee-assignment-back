@@ -1,12 +1,12 @@
 // @flow
 import mongoose from 'mongoose';
 
-// Need to find how to import / inject data
-require('mongoose-long')(mongoose);
-
-import type { Connection } from 'mongodb'
+import type { Connection } from 'mongodb';
 import logger from '../logger';
 import type { MongoConfig } from '../config';
+
+// Need to find how to import / inject data
+require('mongoose-long')(mongoose);
 
 mongoose.Promise = global.Promise;
 
@@ -33,7 +33,6 @@ export default class MongoDB {
     logger.log('info', `Connecting to MongoDB server: ${this.config.url}`);
     this.db = await mongoose.connect(this.config.url);
     logger.log('info', 'Connected to MongoDB');
-
   }
 
   async disconnect(): Promise<void> {

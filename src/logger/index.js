@@ -22,7 +22,7 @@ const options = {
 };
 
 // Keep it simple to focus on the need first
-// Logger should send log to a logger service
+// I think Logger should send logs to a logger service
 const logger = new (winston.Logger)({
   level: 'info',
   transports: [
@@ -34,11 +34,10 @@ const logger = new (winston.Logger)({
 
 // create a stream object with a 'write' function that will be used by `morgan`
 logger.stream = {
-  write: function(message, encoding) {
+  write(message, encoding) {
     // use the 'info' log level so the output will be picked up by both transports (file and console)
     logger.info(message);
   },
 };
-
 
 export default logger;

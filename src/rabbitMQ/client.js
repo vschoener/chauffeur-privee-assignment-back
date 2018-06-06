@@ -5,7 +5,7 @@ import md5 from 'md5';
 import type { AMPQConfig } from '../config';
 import logger from '../logger';
 import type { EventConsumerInterface } from './eventsConsumer';
-import {MessageError} from './messageError';
+import { MessageError } from './messageError';
 
 /**
  * Class Client
