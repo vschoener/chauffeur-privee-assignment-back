@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run serve",
     "flow": "flow",
-    "build": "npm run build:flow && npm run lint && npm run build:transpile",
+    "build": "npm run flow && npm run lint && npm run build:transpile",
     "build:transpile": "babel src -d dist",
     "watch": "concurrently -k -p '[{name}]' -n 'Build,Node' -c 'green.bold,blue.bold' 'npm run build:transpile -- --watch' 'nodemon dist/main.js'",
     "serve": "node dist/main.js",
