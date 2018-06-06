@@ -3,9 +3,10 @@ version: "3.6"
 services:
   app:
     container_name: ${CONTAINER_PREFIX}.app
-    build: ./docker/app
+    build: .
     volumes:
       - .:/app
+      - /app/node_modules
     networks:
       - assignment
     ports:
@@ -26,5 +27,4 @@ volumes:
 
 networks:
   assignment:
-    labels:
-      - "cp_assignment"
+    name: cp_assignment

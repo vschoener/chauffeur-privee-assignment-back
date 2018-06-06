@@ -7,13 +7,15 @@
   "env": {
     "node": true,
     "jest": true,
-    "jasmine": true
+    "mocha": true
   },
   "plugins": [
     "import",
-    "flowtype"
+    "flowtype",
+    "mocha"
   ],
   "rules": {
+    "mocha/no-exclusive-tests": "error",
     "max-len": [
       2,
       120

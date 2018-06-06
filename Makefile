@@ -3,8 +3,6 @@ all: down build
 build:
 	docker-compose build
 
-build-app:
-	docker-compose r
 start:
 	docker-compose up -d
 
@@ -12,14 +10,32 @@ down:
 	docker-compose down
 
 install:
-	docker-compose run --rm app npm install && npm run build
-	# flow-typed install (for dev only)
+	docker-compose run --rm app npm install
+	@make build-app
+
+# Doesn't work in Docker, or we have to compile flow in Docker image with alpine
+#install-dev: install
+#	docker-compose run --rm app flow-typed install --ignoreDeps
+
+build-app:
+	docker-compose run --rm app npm run build
 
 test:
 	docker-compose run --rm app npm test
 
-logs:
+showlogs:
 	docker-compose logs -f
 
+ps:
+	docker-compose ps
+
 watch:
-	docker-compose run --rm app npm run watch
+	docker-compose stop app
+	docker-compose run --rm --service-ports app npm run watch
+
+testApp:
+	docker-compose run --rm app npm run test
+
+installDep:
+	npm install ${deps}
+	docker-compose run --rm app npm install ${deps}

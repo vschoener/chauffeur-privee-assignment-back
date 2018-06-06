@@ -10,6 +10,9 @@ Backend assignment that use:
 - Having a RabbitMQ running
 
 ## Installation
+
+A Docker section is available below if you prefer
+
 ``` bash
 > npm install
 > npm run build
@@ -29,7 +32,7 @@ Setting up the .env if required (Mandatory with Docker usage)
 
 ## Launch tests
 ``` bash
-> npm test
+> npm run test
 ```
 
 ## Start server
@@ -39,7 +42,20 @@ Setting up the .env if required (Mandatory with Docker usage)
 
 # With Docker
 
-Coming...
+```bash
+# Build and install project
+> make build
+> make install
+
+# Connect external rabbitmq to our network
+> docker network connect cp_assignment rabbitmq
+
+# Then you can run the project
+> make start
+
+# During development (stop the running app to run it again with watch)
+> make watch
+```
 
 # Usage
 
