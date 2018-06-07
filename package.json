@@ -10,7 +10,7 @@
     "build:transpile": "babel src -d dist",
     "watch": "concurrently -k -p '[{name}]' -n 'Build,Node' -c 'green.bold,blue.bold' 'npm run build:transpile -- --watch' 'nodemon dist/main.js'",
     "serve": "node dist/main.js",
-    "test": "jest --forceExit",
+    "test": "jest --forceExit --runInBand",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix"
   },

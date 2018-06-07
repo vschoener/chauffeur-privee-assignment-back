@@ -12,7 +12,7 @@ import { LOYALTY_STATUS } from '../loyalty/loyalty.service';
  */
 export const schema: mongoose.Schema = new mongoose.Schema({
   riderId: {
-    type: mongoose.Schema.Types.Long,
+    type: Number,
     required: true,
     unique: true,
   },

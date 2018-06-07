@@ -69,9 +69,6 @@ export class RideService {
       throw MessageError.getRequeueError(`Ride ${data.id} doesn't exist`, 'warn');
     }
 
-    // In case there is an issue with the riders
-    // Do not compare with extra type as it's a Mongoose.Long <> number
-    // Maybe store this one using int32 would resolve this kind of issue :/
     if (ride.riderId != data.rider_id) {
       throw new MessageError('Riders don\'t match');
     }

@@ -33,7 +33,8 @@ watch:
 	docker-compose stop app
 	docker-compose run --rm --service-ports app npm run watch
 
-testApp:
+testApp: start
+	docker-compose stop app
 	docker-compose run --rm app npm run test
 
 installDep:

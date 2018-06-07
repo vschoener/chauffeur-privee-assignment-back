@@ -9,10 +9,14 @@ export default {
   },
   ride: {
     bronze: {
+      id: 1,
+      riderId: 2,
       amount: 100,
       loyaltyExpect: 100,
     },
     silver: {
+      id: 2,
+      riderId: 2,
       amount: 10,
       loyaltyExpect: 30,
     }

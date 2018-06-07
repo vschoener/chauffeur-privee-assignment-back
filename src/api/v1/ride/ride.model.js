@@ -10,12 +10,12 @@ export const RideStatus = {
 
 export const schema: mongoose.Schema = new mongoose.Schema({
   rideId: {
-    type: mongoose.Schema.Types.Long,
+    type: Number,
     required: true,
     unique: true,
   },
   riderId: {
-    type: mongoose.Schema.Types.Long,
+    type: Number,
     required: true,
   },
   amount: {
