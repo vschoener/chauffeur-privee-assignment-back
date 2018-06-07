@@ -1,3 +1,5 @@
+// @flow
+
 /**
  * RideService manage everything about ride
  */
@@ -20,10 +22,13 @@ export class RideService {
    * @param data
    * @returns {Promise<?Ride>}
    */
-  static async processNewRide(data: PayloadRideCreate): Promise<?Ride> {
+  static async processNewRide(data: PayloadRideCreate): Promise<Ride> {
     const rider: Rider = await RiderService.getRiderFromRiderId(data.rider_id);
     if (!rider) {
-      throw MessageError.getRequeueError(`Ride ${data.id} can't be created, rider ${data.rider_id} doesn't exist`, 'warn');
+      throw MessageError.getRequeueError(
+        `Ride ${data.id} can't be created, rider ${data.rider_id} doesn't exist`,
+        'warn',
+      );
     }
 
     const existingRide: Ride = await RideService.getRideFromId(data.id);
@@ -69,7 +74,7 @@ export class RideService {
       throw MessageError.getRequeueError(`Ride ${data.id} doesn't exist`, 'warn');
     }
 
-    if (ride.riderId != data.rider_id) {
+    if (parseInt(ride.riderId, 10) !== parseInt(data.rider_id, 10)) {
       throw new MessageError('Riders don\'t match');
     }
 
@@ -92,10 +97,10 @@ export class RideService {
   /**
    * Get last rider ride
    * @param riderId
-   * @returns {Promise<*>}
+   * @returns {Promise<Ride>}
    */
-  static async getLastRideFromRider(riderId: number) {
-    return await Ride.findOne({ riderId }).sort({ createdAt: -1 }).exec();
+  static async getLastRideFromRider(riderId: number): Promise<?Ride> {
+    return Ride.findOne({ riderId }).sort({ createdAt: -1 }).exec();
   }
 
   /**
@@ -104,6 +109,6 @@ export class RideService {
    * @returns {Promise<Rider>}
    */
   static async getRideFromId(rideId: string): Promise<?Ride> {
-    return await Ride.findOne({ rideId }).exec();
+    return Ride.findOne({ rideId }).exec();
   }
 }

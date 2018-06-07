@@ -1,8 +1,9 @@
+// @flow
 export class MessageError extends Error {
   requeue: boolean;
   logLevel: string;
 
-  constructor(message) {
+  constructor(message: any) {
     super(message);
 
     this.name = this.constructor.name;

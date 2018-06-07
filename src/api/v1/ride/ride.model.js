@@ -8,37 +8,39 @@ export const RideStatus = {
   // Real case might have CANCELED for example and help to not count the loyalty point
 };
 
-export const schema: mongoose.Schema = new mongoose.Schema({
-  rideId: {
-    type: Number,
-    required: true,
-    unique: true,
+export const schema: mongoose.Schema = new mongoose.Schema(
+  {
+    rideId: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
+    riderId: {
+      type: Number,
+      required: true,
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    status: {
+      type: String,
+      require: true,
+      default: RideStatus.CREATED,
+    },
+    loyaltyPointEarned: {
+      type: Number,
+      require: false,
+      default: 0,
+    },
   },
-  riderId: {
-    type: Number,
-    required: true,
-  },
-  amount: {
-    type: Number,
-    required: true,
-  },
-  status: {
-    type: String,
-    require: true,
-    default: RideStatus.CREATED,
-  },
-  loyaltyPointEarned: {
-    type: Number,
-    require: false,
-    default: 0,
-  },
-},
   {
     timestamps: {
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
-    }
-  });
+    },
+  },
+);
 
 export class RideModel extends mongoose.Model {
   rideId: number;

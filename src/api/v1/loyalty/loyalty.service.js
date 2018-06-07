@@ -70,7 +70,7 @@ export class LoyaltyService {
    * @param status
    * @returns {number}
    */
-  static getPointEarned(ride: Ride, status: string) {
+  static getPointEarned(ride: Ride, status: string): number {
     const rule: Rule = LoyaltyService.getRuleFromStatus(status);
 
     return rule.multiplier * ride.amount;

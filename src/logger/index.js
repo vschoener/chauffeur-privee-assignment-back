@@ -1,12 +1,21 @@
 // @flow
 import appRoot from 'app-root-path';
 import winston from 'winston';
+import fs from 'fs';
+
+const dirLogs = `${appRoot}/logs`;
+
+// It's call during initialization, we can block the thread
+if (!fs.existsSync(dirLogs)) {
+  fs.mkdirSync(dirLogs);
+}
+
 
 // define the custom settings for each transport (file, console)
 const options = {
   file: {
     level: 'info',
-    filename: `${appRoot}/logs/app.log`,
+    filename: `${dirLogs}/app.log`,
     handleExceptions: true,
     json: true,
     maxsize: 5242880, // 5MB

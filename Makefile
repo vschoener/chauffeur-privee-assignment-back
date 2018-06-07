@@ -9,6 +9,9 @@ start:
 down:
 	docker-compose down
 
+clean:
+	docker-compose run --rm app rm -rf node_modules logs flow-typed dist
+
 install:
 	docker-compose run --rm app npm install
 	@make build-app
