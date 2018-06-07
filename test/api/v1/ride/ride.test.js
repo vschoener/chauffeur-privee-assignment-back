@@ -19,6 +19,7 @@ let rider: typeof Rider;
 beforeAll(async () => {
   await mongodb.connect();
   await Ride.remove();
+  await Rider.remove();
 
   const payloadSignUp: PayloadSignUp = {
     id: common.ride.bronze.riderId,

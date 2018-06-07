@@ -5,10 +5,12 @@ import common from '../../../common';
 import { Rider } from '../../../../src/api/v1/rider/rider.model';
 import { RiderService } from '../../../../src/api/v1/rider/rider.service';
 import type { PayloadPhoneUpdate, PayloadSignUp } from '../../../../src/rabbitMQ/eventsConsumer';
+import { Ride } from '../../../../src/api/v1/ride/ride.model';
 
 const mongodb = common.mongodb;
 beforeAll(async () => {
   await mongodb.connect();
+  await Ride.remove();
   await Rider.remove();
 });
 

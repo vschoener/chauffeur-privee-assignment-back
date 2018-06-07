@@ -62,4 +62,4 @@ schema.loadClass(RiderModel);
 
 // On Typescript I can use an interface and enforce Model<TypeInterface>
 // But there is not flow type on Mongoose 5 :(
-export const Rider: typeof RiderModel = mongoose.model('Rider', schema);
+export const Rider: RiderModel = mongoose.model('Rider', schema);
